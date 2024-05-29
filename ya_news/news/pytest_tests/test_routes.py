@@ -4,12 +4,13 @@ from http import HTTPStatus
 from pytest_django.asserts import assertRedirects
 from django.urls import reverse
 
+pytestmark = pytest.mark.django_db
+
 
 @pytest.mark.parametrize(
     'name',
     ('news:home', 'users:login', 'users:logout', 'users:signup')
 )
-@pytest.mark.django_db
 def test_pages_availability_for_anonymous_user(client, name):
     """Страницы доступны анонимным пользователям."""
     url = reverse(name)
@@ -35,7 +36,6 @@ def test_pages_availability_for_author(author_client, news):
     'name',
     ('news:edit', 'news:delete'),
 )
-@pytest.mark.django_db
 def test_pages_availability_for_different_users(
         parametrized_client, name, comment, expected_status
 ):
@@ -45,7 +45,6 @@ def test_pages_availability_for_different_users(
     assert response.status_code == expected_status
 
 
-@pytest.mark.django_db
 def test_redirect_for_delete_comments(client, comment):
     """Редирект удаления комментария для анонимных пользователей."""
     login_url = reverse('users:login')
@@ -55,7 +54,6 @@ def test_redirect_for_delete_comments(client, comment):
     assertRedirects(response, expected_url)
 
 
-@pytest.mark.django_db
 def test_redirect_for_edit_comments(client, comment):
     """Редирект изменения комментария для анонимных пользователей."""
     login_url = reverse('users:login')
